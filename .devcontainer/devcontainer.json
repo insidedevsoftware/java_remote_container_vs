@@ -1,0 +1,94 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.195.0/containers/java
+{
+	"name": "Remote-Container-Java",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": {
+			// Update the VARIANT arg to pick a Java version: 8, 11, 14
+			// Append -bullseye or -buster to pin to an OS version.
+			// Use the -bullseye variants on local arm64/Apple Silicon.
+			"VARIANT": "11-bullseye",
+			// Options
+			"INSTALL_MAVEN": "true",
+			"MAVEN_VERSION": "3.8.5",
+			"INSTALL_GRADLE": "false",
+			"NODE_VERSION": "lts/*"
+		},
+		"runArgs": ["--init", "--privileged"],
+	    "overrideCommand": false
+                
+	},
+        "containerEnv": {
+		// Uncomment to overwrite devcontainer .kube/config and .minikube certs with the localhost versions
+		// each time the devcontainer starts, if the respective .kube-localhost/config and .minikube-localhost
+		// folders respectively are bind mounted to the devcontainer.
+	        "SYNC_LOCALHOST_KUBECONFIG": "true",
+
+		// Uncomment to disable docker-in-docker and automatically proxy default /var/run/docker.sock to
+		
+		// the localhost bind-mount /var/run/docker-host.sock.
+		 "BIND_LOCALHOST_DOCKER": "true",
+		
+		// define the clusters
+		//dev
+		 "DEV_CLUSTER_PROVIDER": "minikube",
+		 "DEV_CLUSTER_NAME": "minikube",
+		  
+		 "DEV_KUBE_SERVER_API": "${localEnv:KUBE_API_SERVER}",
+		 // Maven Settings 
+		 "M2_LOCAL_HOME_CONFIG": "${env:HOME}${localEnv:USERPROFILE}/m2/settings.xml"
+		  
+		 
+	},
+
+	"mounts": [
+		        
+                "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
+				"source=${env:HOME}${localEnv:USERPROFILE}/.kube,target=/usr/local/share/kube-localhost,type=bind",
+                "source=${env:HOME}${localEnv:USERPROFILE}/.minikube,target=/usr/local/share/minikube-localhost,type=bind"
+  ]
+
+    //"runArgs": ["--network=host"]// Set *default* container specific settings.json values on container create.
+	"settings": { 
+		"java.home": "/docker-java-home",
+		"maven.executable.path": "/usr/local/sdkman/candidates/maven/current/bin/mvn",
+		"cloudcode.autoDependencies": "off"
+		},
+	
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+                 "davidanson.vscode-markdownlint",
+				 "mutantdino.resourcemonitor",
+				 "humao.rest-client",
+		         "vscjava.vscode-java-pack",
+                 "dbaeumer.vscode-eslint",
+                 "esbenp.prettier-vscode",
+                 "googlecloudtools.cloudcode",
+                 "ms-azuretools.vscode-docker",
+		         "ms-kubernetes-tools.vscode-kubernetes-tools",
+				 "aquasecurityofficial.trivy-vulnerability-scanner",
+				 "mindaro.mindaro",
+				 "redhat.vscode-yaml",
+				 "timonwong.shellcheck",
+				 "gruntfuggly.todo-tree",
+				 
+	],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	 "forwardPorts": [8088],
+	 "portsAttributes": {"8088": {"label": "Application port"}}
+	
+	// Use 'onCreateCommand' to run commands as part of container creation.
+	// "onCreateCommand": "/bin/bash -c .devcontainer/on-create.sh",
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	 "postCreateCommand": "sudo chmod 666 /var/run/docker.sock", 
+	
+	// Use 'postStartCommand' to run commands after the container starts.
+	//"postStartCommand": "/bin/bash -c .devcontainer/post-start.sh"
+	 
+
+	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remo	te/containers/non-root.
+	"remoteUser": "vscode"
+}
